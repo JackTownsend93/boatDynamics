@@ -1,0 +1,7 @@
+*.stl
+*.out
+checkpoint_*
+boatHullFormSolver.o
+boatHullFormSolver
+.sconsign.dblite
+tmp/
