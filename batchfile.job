@@ -1,25 +1,25 @@
-#!/bin/bash
+#!/bin/bash --login
+###
+#job name
+#SBATCH --job-name=dynamics
+#job stdout file
+#SBATCH --output=dynamics.out.%J
+#job stderr file
+#SBATCH --error=dynamics.err.%J
+#maximum job time in D-HH:MM
+#SBATCH --time=0-72:00
+#number of parallel processes (tasks) you are requesting - maps to MPI processes
+#SBATCH --ntasks=50 
+#memory per process in MB 
+#SBATCH --mem-per-cpu=4000 
+#tasks to run per node (change for hybrid OpenMP/MPI) 
+#SBATCH --ntasks-per-node=40
+###
 
-# Set the name of the job
-# (this gets displayed when you get a list of jobs on the cluster)
-#SBATCH --job-name="speed"
+#now run normal batch commands
+module load openmpi/gnu/2.0.2.10
 
-# Specify the maximum wall clock time your job can use
-# (Your job will be killed if it exceeds this)
-#SBATCH --time=0:72:00
-
-# Specify the amount of memory your job needs per cpu-core (in Mb)
-# (Your job will be killed if it exceeds this for a significant length of time)
-#SBATCH --mem-per-cpu=1024
-
-# Specify the number of cpu cores your job requires
-#SBATCH --ntasks=50
-
-# Set up the environment
-module load gnu
-module load openmpi
-
-# Run the application
-echo My job is started
-mpiexec ./boatHullFormSolver params.xml continue.xml
-echo My job has finished
+#Run the executable
+echo Job started.
+mpiexec ./boatHullFormSolver params.xml #continue.xml
+echo Job finished.

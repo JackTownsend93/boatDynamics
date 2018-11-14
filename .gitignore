@@ -1,6 +1,8 @@
 *.stl
 *.out
 checkpoint_*
+dynamics.out*
+dynamics.err*
 boatHullFormSolver.o
 boatHullFormSolver
 .sconsign.dblite
