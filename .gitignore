@@ -1,9 +1,9 @@
 *.stl
 *.out
 checkpoint_*
-dynamics.out*
-dynamics.err*
+slurm-*
 boatHullFormSolver.o
 boatHullFormSolver
 .sconsign.dblite
 tmp/
+junk/

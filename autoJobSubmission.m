@@ -5,7 +5,7 @@
 % - The simulation will run for as many iterations as is stated in the params.xml file. A 'finished' file will then
 %   be generated, prompting the matlab script to abort the simulation and restart under new conditions.
 
-%% DEFINITIONS AND USER INPUT.
+%% DEFINITIONS AND USER INPUT - CHECK THESE BEFORE EACH RUN!
 paramfile = 'params.xml';
 batchfile = 'batchfile_init.job'; % initial batchfile does not call continue.xml.
 
@@ -14,9 +14,16 @@ dt          = input('How often should the sim restart (seconds)?:\n');
 numOfSims   = maxTime/dt;
 tNext       = dt;
 
+% Dynamics Variables.
+% Boat CofG:
+CofG = [-6.0;   % x.
+         0.8;   % y.
+         0.0;]; % z.
+% STL filename without extension (Note: will be overwritten when moved; save a backup STL file in the desired initial position).
+filenameSTL = 'dv15';
 
-%% USER SELECTION OF PARAMETERS TO CHANGE.
-changeSpeed = input('Would you like to vary inlet velocity across sims? (y/n)', 's');
+%% USER OPTION - Variable speed?.
+changeSpeed = input('Would you like to vary inlet velocity across sims? (y/n)\n', 's');
 if changeSpeed == 'y'
     fprintf('Number of sims about to be run = %f\n',numOfSims);
     speedPrevious  = input('Enter the speed (m/s) in the initial params_init.xml file?\n'); %can be automated later.
@@ -27,15 +34,17 @@ else
     error('ERROR: You must enter "y" or "n".');
     end
 end
-boatDynamics = input('Enable boat dynamics? (y/n)\n', 's');
-if boatDynamics == 'y'
-    fprintf('Boat dynamics ENABLED.\n');
-else if boatDynamics == 'n';
-    fprintf('Boat dynamics DISABLED.\n');
-else
-    error('ERROR: You must enter "y" or "n".');
-    end
-end
+
+%% USER OPTION - Boat dynamics?
+% boatDynamics = input('Enable boat dynamics? (y/n)\n', 's');
+% if boatDynamics == 'y'
+%     fprintf('Boat dynamics ENABLED.\n');
+% else if boatDynamics == 'n';
+%     fprintf('Boat dynamics DISABLED.\n');
+% else
+%     error('ERROR: You must enter "y" or "n".');
+%     end
+% end
 
 
 %% SUBMIT INITIAL SIMULATION.
@@ -56,12 +65,20 @@ while i <= numOfSims
         tSim = funcCheckIfTimeToRestart(jobID, tNext);
         if tSim > tNext
             % Begin restart: start checkpointing process.
-            system('rm checkpoint_*'); % Delete old checkpoint files first.
+            %system('rm checkpoint_*'); % Delete old checkpoint files first.
             system('touch abort');     % Trigger checkpointing by creating abort file.
             
             % Wait for checkpoint files to finish writing.
-            isKilled = funcConfirmJobIsKilled(jobID);
+            funcConfirmJobIsKilled(jobID);
             
+            % INSERT DYNAMICS AND STL MANIPULATION HERE.
+            % 1. Dynamics determines the rotation and z-displacement.
+	    %    [SET MANUALLY, FOR NOW]:
+	         rotation_deg = cosd(30*i);
+            zDisplacement_m   = 0.1*sind(30*i);
+	    % Tranform current STL CofG to origin.
+            CofG = funcManipulateSTL(filenameSTL, CofG, rotation_deg, zDisplacement_m, i);
+	    
             % Submit the continue batchfile and get new jobID.
             [status,cmdout] = system('sbatch batchfile.job');
             jobID = funcFindJobID(cmdout);
@@ -82,7 +99,7 @@ while i <= numOfSims
         end    
     else
         fprintf('Waiting for output file to be written. Job may still be queuing...\n');
-        pause(5)
+        pause(30)
     end
 end
 

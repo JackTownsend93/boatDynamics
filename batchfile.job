@@ -3,9 +3,9 @@
 #job name
 #SBATCH --job-name=dynamics
 #job stdout file
-#SBATCH --output=dynamics.out.%J
+#SBATCH --output=slurm-%J.out
 #job stderr file
-#SBATCH --error=dynamics.err.%J
+#SBATCH --error=slurm-%J.err
 #maximum job time in D-HH:MM
 #SBATCH --time=0-72:00
 #number of parallel processes (tasks) you are requesting - maps to MPI processes
@@ -21,5 +21,5 @@ module load openmpi/gnu/2.0.2.10
 
 #Run the executable
 echo Job started.
-mpiexec ./boatHullFormSolver params.xml #continue.xml
+mpiexec ./boatHullFormSolver params.xml continue.xml
 echo Job finished.
