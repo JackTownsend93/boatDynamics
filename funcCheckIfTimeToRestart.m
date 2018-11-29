@@ -42,7 +42,7 @@ tSim = str2double(regexp(textSampleCat,'(?<= t = [^0-9]*)[0-9]*\.?[0-9]+', 'matc
 format longg
 if isempty(tSim)
     fprintf('%s: Cannot read a time value from job %s.\n', mfilename, jobID);
-    fprintf('%s: Job has either failed, or is still queueing.', mfilename);
+    fprintf('%s: Job has either failed or is still initialising.', mfilename);
     fprintf('\n');
 else
     fprintf('%s: Waiting to reach next restart time...\n', mfilename);

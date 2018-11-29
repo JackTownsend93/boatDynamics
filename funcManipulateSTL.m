@@ -40,5 +40,5 @@ CofG(2) = CofG(2) + zDisplacement_m;
 stlWrite([filenameSTL,'.stl'], faces, vertices);
 % Store a copy in /stl_stored for paraview post-processing.
 filenameSTL_i = [filenameSTL,'_',num2str(i)];
-stlWrite(['stl_stored/',filenameSTL_i,'.stl'], faces, vertices);
+stlWrite(['tmp/',filenameSTL_i,'.stl'], faces, vertices);
 

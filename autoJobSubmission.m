@@ -11,7 +11,7 @@ batchfile = 'batchfile_init.job'; % initial batchfile does not call continue.xml
 
 maxTime     = input('Enter the maximum physical time to run for:\n');
 dt          = input('How often should the sim restart (seconds)?:\n');
-numOfSims   = maxTime/dt;
+numOfSims   = maxTime/dt-1;
 tNext       = dt;
 
 % Dynamics Variables.
@@ -23,17 +23,17 @@ CofG = [-6.0;   % x.
 filenameSTL = 'dv15';
 
 %% USER OPTION - Variable speed?.
-changeSpeed = input('Would you like to vary inlet velocity across sims? (y/n)\n', 's');
-if changeSpeed == 'y'
-    fprintf('Number of sims about to be run = %f\n',numOfSims);
-    speedPrevious  = input('Enter the speed (m/s) in the initial params_init.xml file?\n'); %can be automated later.
-    speedIncrement = input('Enter the increment in speed between each restart:\n');
-else if changeSpeed =='n'
-    fprintf('No change in inlet velocity.\n');
-else 
-    error('ERROR: You must enter "y" or "n".');
-    end
-end
+% changeSpeed = input('Would you like to vary inlet velocity across sims? (y/n)\n', 's');
+% if changeSpeed == 'y'
+%     fprintf('Number of sims about to be run = %f\n',numOfSims);
+%     speedPrevious  = input('Enter the speed (m/s) in the initial params_init.xml file?\n'); %can be automated later.
+%     speedIncrement = input('Enter the increment in speed between each restart:\n');
+% else if changeSpeed =='n'
+%     fprintf('No change in inlet velocity.\n');
+% else 
+%     error('ERROR: You must enter "y" or "n".');
+%     end
+% end
 
 %% USER OPTION - Boat dynamics?
 % boatDynamics = input('Enable boat dynamics? (y/n)\n', 's');
@@ -63,9 +63,9 @@ while i <= numOfSims
     if exist(slurmOutName,'file') == 2
         % Periodically check the time step to see when it exceeds tNext.
         tSim = funcCheckIfTimeToRestart(jobID, tNext);
-        if tSim > tNext
+        if tSim >= tNext
             % Begin restart: start checkpointing process.
-            %system('rm checkpoint_*'); % Delete old checkpoint files first.
+            system('rm checkpoint_*'); % Delete old checkpoint files first.
             system('touch abort');     % Trigger checkpointing by creating abort file.
             
             % Wait for checkpoint files to finish writing.
@@ -74,15 +74,17 @@ while i <= numOfSims
             % INSERT DYNAMICS AND STL MANIPULATION HERE.
             % 1. Dynamics determines the rotation and z-displacement.
 	    %    [SET MANUALLY, FOR NOW]:
-	         rotation_deg = cosd(30*i);
-            zDisplacement_m   = 0.1*sind(30*i);
+	         rotation_deg = 0.50*cosd(10*i);
+            zDisplacement_m   = 0.08*sind(10*i);
 	    % Tranform current STL CofG to origin.
             CofG = funcManipulateSTL(filenameSTL, CofG, rotation_deg, zDisplacement_m, i);
 	    
+	    % Move the old slurm.out file to /tmp to avoid cluttering the working directory.
+	    system(['mv slurm-',jobID,'.out tmp/']);
             % Submit the continue batchfile and get new jobID.
             [status,cmdout] = system('sbatch batchfile.job');
             jobID = funcFindJobID(cmdout);
-            slurmOutName = strcat('slurm-',jobID,'.out');
+	    slurmOutName = strcat('slurm-',jobID,'.out');
             
             % BEGIN TEMPORARY BATCHFILE FUDGE: batchfile for each restart, batchfile_1, batchfile_2... etc.
             %batchCommand = strcat('sbatch batchfile_',num2str(batchNum),'.job');
@@ -105,8 +107,9 @@ end
 
 %% FINALISE.
 % Kill final job.
-command = strcat({'scancel'},{' '},{jobID});
-system(command{1});
+system(['scancel ',jobID]);
+% Move the final slurm.out file to /tmp.
+system(['mv slurm-',jobID,'.out tmp/']);
 
 fprintf('\n\n');
 fprintf('           %%-------------------------------------------%%\n');
