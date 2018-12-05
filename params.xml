@@ -3,14 +3,14 @@
 <geometry>
     <simulationDomain>
         <x> -15.0    8.0 </x>
-        <y>  -5.0    5.0 </y>
+        <y>  -2.0    5.0 </y>
         <z>  -4.5    4.5 </z>
     </simulationDomain>
-    <inletAbsorbingZoneWidth> 1.5 </inletAbsorbingZoneWidth>
+    <inletAbsorbingZoneWidth> 1.0 </inletAbsorbingZoneWidth>
     <outletAbsorbingZoneWidth> 1.0 </outletAbsorbingZoneWidth>
     <lateralAbsorbingZoneWidth> 0.5 </lateralAbsorbingZoneWidth>
     <topAbsorbingZoneWidth> 0.1 </topAbsorbingZoneWidth>
-    <fluidHeight> 6.0 </fluidHeight>
+    <fluidHeight> 2.0 </fluidHeight>
     <boatStl> dv15.stl </boatStl>
 </geometry>
 <fluid>
@@ -21,7 +21,7 @@
 <solver>
     <inflationParameter> 0.0 </inflationParameter>
     <characteristicLength> 15.0 </characteristicLength>
-    <resolution> 801 </resolution>
+    <resolution> 101 </resolution>
     <inletVelocity> 15.0 </inletVelocity>
     <uRef> 15.0 </uRef>
     <uLB> 0.01 </uLB>
@@ -40,7 +40,7 @@
 <output>
     <outDir> ./tmp </outDir>
     <statIter> 100 </statIter>
-    <outIter> 1000 </outIter>
+    <outIter> 500 </outIter>
     <cpIter> -1 </cpIter>
     <abIter> 16 </abIter>
     <excludeInteriorForOutput> true </excludeInteriorForOutput>

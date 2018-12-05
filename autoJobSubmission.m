@@ -26,7 +26,7 @@ filenameSTL = 'dv15';
 % changeSpeed = input('Would you like to vary inlet velocity across sims? (y/n)\n', 's');
 % if changeSpeed == 'y'
 %     fprintf('Number of sims about to be run = %f\n',numOfSims);
-%     speedPrevious  = input('Enter the speed (m/s) in the initial params_init.xml file?\n'); %can be automated later.
+%     speedPrevious  = input('Enter the speed (m/s) in the initial params.xml file?\n'); %can be automated later.
 %     speedIncrement = input('Enter the increment in speed between each restart:\n');
 % else if changeSpeed =='n'
 %     fprintf('No change in inlet velocity.\n');
@@ -79,8 +79,9 @@ while i <= numOfSims
 	    % Tranform current STL CofG to origin.
             CofG = funcManipulateSTL(filenameSTL, CofG, rotation_deg, zDisplacement_m, i);
 	    
-	    % Move the old slurm.out file to /tmp to avoid cluttering the working directory.
+	    % Move the old slurm .out and .err files to /tmp to avoid cluttering the working directory.
 	    system(['mv slurm-',jobID,'.out tmp/']);
+	    system(['mv slurm-',jobID,'.err tmp/']);
             % Submit the continue batchfile and get new jobID.
             [status,cmdout] = system('sbatch batchfile.job');
             jobID = funcFindJobID(cmdout);

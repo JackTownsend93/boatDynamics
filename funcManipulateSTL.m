@@ -1,4 +1,4 @@
-function CofG = funcManipulateSTL(filenameSTL, CofG, rotation_deg, zDisplacement_m, i)
+function [CofG, iterationNum] = funcManipulateSTL(filenameSTL, CofG, rotation_deg, zDisplacement_m, i)
 %% Manipulates the .stl geometry by rotating and transforming in z-direction according to dynamics.
 %  1. Read in .stl file (binary or ASCII).
 %  2. Move whole .stl so that the CofG is at the origin.
@@ -38,7 +38,13 @@ CofG(2) = CofG(2) + zDisplacement_m;
 %% 7. Write .stl files.
 % Write an updated .stl file out in working directory.
 stlWrite([filenameSTL,'.stl'], faces, vertices);
+% Get iteration number from latest interface file to be written.
+interfaceFiles = dir('tmp/interface_*');
+iterationNum = interfaceFiles(length({interfaceFiles.name})).name;
+iterationNum = iterationNum(regexp(iterationNum,'\d'));
 % Store a copy in /stl_stored for paraview post-processing.
-filenameSTL_i = [filenameSTL,'_',num2str(i)];
-stlWrite(['tmp/',filenameSTL_i,'.stl'], faces, vertices);
+filenameSTL_iter = [filenameSTL,'_',iterationNum];
+stlWrite(['tmp/',filenameSTL_iter,'.stl'], faces, vertices);
+
+fprintf('     %s: Palabos iteration: %s\n',mfilename,num2str(iterationNum));
 
