@@ -10,7 +10,7 @@
     <outletAbsorbingZoneWidth> 1.0 </outletAbsorbingZoneWidth>
     <lateralAbsorbingZoneWidth> 0.5 </lateralAbsorbingZoneWidth>
     <topAbsorbingZoneWidth> 0.1 </topAbsorbingZoneWidth>
-    <fluidHeight> 2.0 </fluidHeight>
+    <fluidHeight> 2.1 </fluidHeight>
     <boatStl> dv15.stl </boatStl>
 </geometry>
 <fluid>
@@ -21,9 +21,9 @@
 <solver>
     <inflationParameter> 0.0 </inflationParameter>
     <characteristicLength> 15.0 </characteristicLength>
-    <resolution> 101 </resolution>
-    <inletVelocity> 15.0 </inletVelocity>
-    <uRef> 15.0 </uRef>
+    <resolution> 401 </resolution>
+    <inletVelocity> 20.0 </inletVelocity>
+    <uRef> 20.0 </uRef>
     <uLB> 0.01 </uLB>
     <A> 0.0 </A>
     <P> 0.04 </P> 
@@ -54,17 +54,17 @@
     <outputOnSlices> true </outputOnSlices>
     <outputSlices>
         <xSlices>
-            <xPositions> -5.0 0.0 5.0 </xPositions>
+            <xPositions>  </xPositions>
             <yRange> -100.0 100.0 </yRange>
             <zRange> -100.0 100.0 </zRange>
         </xSlices>
         <ySlices>
-            <yPositions> 0.0 </yPositions>
+            <yPositions>  </yPositions>
             <zRange> -100.0 100.0 </zRange>
             <xRange> -100.0 100.0 </xRange>
         </ySlices>
         <zSlices>
-            <zPositions> 0.0 </zPositions>
+            <zPositions>  </zPositions>
             <xRange> -100.0 100.0 </xRange>
             <yRange> -100.0 100.0 </yRange>
         </zSlices>

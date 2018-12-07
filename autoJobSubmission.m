@@ -9,10 +9,12 @@
 paramfile = 'params.xml';
 batchfile = 'batchfile_init.job'; % initial batchfile does not call continue.xml.
 
-maxTime     = input('Enter the maximum physical time to run for:\n');
-dt          = input('How often should the sim restart (seconds)?:\n');
-numOfSims   = maxTime/dt-1;
-tNext       = dt;
+% maxTime     = input('Enter the maximum physical time to run for:\n');
+% dt          = input('How often should the sim restart (seconds)?:\n');
+  maxTime = 10.0;
+       dt =  0.05;
+numOfSims = maxTime/dt-1;
+    tNext = dt;
 
 % Dynamics Variables.
 % Boat CofG:
@@ -111,6 +113,8 @@ end
 system(['scancel ',jobID]);
 % Move the final slurm.out file to /tmp.
 system(['mv slurm-',jobID,'.out tmp/']);
+% Replace moved .stl file with initial .stl file for next run.
+system(['cp ',filenameSTL,'_init.stl ',filename,'.stl']);
 
 fprintf('\n\n');
 fprintf('           %%-------------------------------------------%%\n');

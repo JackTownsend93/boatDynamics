@@ -1,4 +1,4 @@
-function [CofG, iterationNum] = funcManipulateSTL(filenameSTL, CofG, rotation_deg, zDisplacement_m, i)
+function [CofG, iterationNum, vertexNormals] = funcManipulateSTL(filenameSTL, CofG, rotation_deg, zDisplacement_m, i)
 %% Manipulates the .stl geometry by rotating and transforming in z-direction according to dynamics.
 %  1. Read in .stl file (binary or ASCII).
 %  2. Move whole .stl so that the CofG is at the origin.
@@ -7,9 +7,10 @@ function [CofG, iterationNum] = funcManipulateSTL(filenameSTL, CofG, rotation_de
 %  5. Perform z translation.
 %  6. Tranform CofG also.
 %  7. Write to new .stl file and store a copy for post-processing later.
+%  8. Get vertex normals for later pressure -> force calcs.
 
 %% 1. Read .stl file.
-[vertices, faces, normals, nameSTL] = stlRead([filenameSTL,'.stl']);
+[vertices, faces, faceNormals, nameSTL] = stlRead([filenameSTL,'.stl']);
 
 %% 2. Move whole .stl file so that the CofG is at the origin.
 vertices(:,1) = vertices(:,1) - CofG(1);
@@ -46,5 +47,17 @@ iterationNum = iterationNum(regexp(iterationNum,'\d'));
 filenameSTL_iter = [filenameSTL,'_',iterationNum];
 stlWrite(['tmp/',filenameSTL_iter,'.stl'], faces, vertices);
 
+% 8. Get vertex normals.
+vertexNormals = zeros(size(vertices));
+% Add the normals for each point of every triangle.
+vertexNormals(faces(:,1),:) = vertexNormals(faces(:,1),:) + faceNormals; 
+vertexNormals(faces(:,2),:) = vertexNormals(faces(:,2),:) + faceNormals;
+vertexNormals(faces(:,3),:) = vertexNormals(faces(:,3),:) + faceNormals;
+% Calculate vertex normals.
+vertexNormals = vn./repmat(sqrt(sum(vertexNormals.^2,2)),[1,3]);
+vertexNormals = -vertexNormals; % Invert to point inward of volume.
+
+% Print iteration number out while we have it.
 fprintf('     %s: Palabos iteration: %s\n',mfilename,num2str(iterationNum));
+
 
