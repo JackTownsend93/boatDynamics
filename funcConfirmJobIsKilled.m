@@ -17,14 +17,12 @@ function funcConfirmJobIsKilled(jobID)
 %
 % Determine if script is still running by searching for the regexp of the jobID.
 
-
 % Request job information.
 command = strcat('squeue -j ',num2str(jobID));
 [status,cmdout] = system(command);
 
 isKilled = false;
 
-% Begin rewrite.
 jobStillRunning = true;
 while jobStillRunning
     jobStatus = regexp(cmdout,jobID);
@@ -41,19 +39,4 @@ while jobStillRunning
     end
 end
 
-% End rewrite.
-
-%while isKilled == false
-%    if length(cmdout) > 100
-%        fprintf('%s: waiting for checkpointing to finish...\n', mfilename);
-%        pause(5)
-%        [status,cmdout] = system(command{1});
-%    else
-%        isKilled == true;
-%        fprintf('%s: checkpointing finished.\n', mfilename);
-%        break
-%    end
-%end
-
-% Now clean up the old checkpoint files. IN ANOTHER FUNCTION
-
+end

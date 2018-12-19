@@ -17,3 +17,5 @@ else
     jobID = matchedTokens{1};
     fprintf('%s: Job ID %s was found from %s.\n', mfilename, jobID, slurmOutputString);
 end
+
+end

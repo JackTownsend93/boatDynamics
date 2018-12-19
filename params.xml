@@ -10,7 +10,7 @@
     <outletAbsorbingZoneWidth> 1.0 </outletAbsorbingZoneWidth>
     <lateralAbsorbingZoneWidth> 0.5 </lateralAbsorbingZoneWidth>
     <topAbsorbingZoneWidth> 0.1 </topAbsorbingZoneWidth>
-    <fluidHeight> 2.1 </fluidHeight>
+    <fluidHeight> 2.0 </fluidHeight>
     <boatStl> dv15.stl </boatStl>
 </geometry>
 <fluid>

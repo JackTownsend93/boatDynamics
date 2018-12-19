@@ -44,3 +44,5 @@ elseif changeSpeed == 'n'
     fprintf('%s: No speed change.\n', mfilename); 
 
 end
+
+end

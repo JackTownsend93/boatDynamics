@@ -1,4 +1,4 @@
-function [x_forceAvg, y_forceAvg, pressureCoords, pressureData] = funcReadForcesAndPressures()
+function [x_forceAvg, y_forceAvg, pressureCoords, pressureData] = funcReadForcesAndPressures(vertices,vertexNormals)
 %% Reads forces and pressures from Palabos outputs.
 % Forces are contained in total_force_on_boat.dat file in /tmp.
 % Pressures are contained in boat_pressure_xxxxxxxx.vtk (xxxxxxxx =
@@ -108,31 +108,12 @@ for i = 1:numPoints
     pressureData(i,:) = str2double(line);
 end
 
-% Plotting pressure at coords.
-scatter3(pressureCoords(:,1),pressureCoords(:,2),pressureCoords(:,3),1,pressureData(:,1));
+% DEBUGGING: Plotting pressure at coords.
+%scatter3(pressureCoords(:,1),pressureCoords(:,2),pressureCoords(:,3),1,pressureData(:,1));
+quiver3(vertices(:,1),vertices(:,2),vertices(:,3),vertexNormals(:,1),vertexNormals(:,2),vertexNormals(:,3));
 axis equal;
+hold on;
 
 fclose(fid);
 
-
-
-% UNUSED HERE NOW, BUT USEFUL; APPLY THIS TO POINTS WHERE FIXED PARAMS.XML LINES ARE
-% ASSUMED.
-% % First read user-set value to frequency of outputs.
-% fid = fopen('params.xml');
-% if fid == -1
-%     error('%s: ERROR params.xml not found.',mfilename);
-% end
-% % Find outIter line and read value.
-% while ~feof(fid)
-%     line = fgetl(fid);
-%     startIndex = regexp(line,'outIter');
-%     if startIndex
-%         % outIter line found, get value.
-%         outIter = strsplit(line);
-%         outIter = str2double(outIter{3});
-%         break
-%     else
-%         % Not outIter line, continue searching.
-%     end
-% end
+end

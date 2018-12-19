@@ -2,7 +2,7 @@
 *.out
 checkpoint_*
 slurm-*
-matSub-*
+submit-*
 boatHullFormSolver.o
 boatHullFormSolver
 .sconsign.dblite

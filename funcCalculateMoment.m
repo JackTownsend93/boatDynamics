@@ -7,3 +7,4 @@ mag(:,2) = vertexNormals(:,2)*pressureData';
 mag(:,3) = vertexNormals(:,3)*pressureData';
 
 
+end
