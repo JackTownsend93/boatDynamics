@@ -37,11 +37,11 @@ end
 boatName = boatName(1:length(boatName)-4);
 
 % Count number of output files in /tmp.
-interfaceFiles = dir('temptmp/interface_*');
+interfaceFiles = dir('tmp/interface_*');
 numPalabosOutputs = (length({interfaceFiles.name}));
 
 % List boat.stl files in /tmp.
-boatStlFiles = dir(['temptmp/',boatName,'_*']);
+boatStlFiles = dir(['tmp/',boatName,'_*']);
 boatStlFileNames = struct2cell(boatStlFiles);
 boatStlFileNames = boatStlFileNames(1,:)';
 
@@ -76,9 +76,9 @@ for i = 1:length(matchingBoatStl)
         % appropriate iteration number.
         if strcmp(previousMatch,boatName)
             % Special case, copy main boat.stl file to iternumbered file.
-            system(['cp ',boatName,'.stl temptmp/',boatName,'_',palabosIterNumPadded,'.stl']);
+            system(['cp ',boatName,'.stl tmp/',boatName,'_',palabosIterNumPadded,'.stl']);
         else
-            system(['cp temptmp/',previousMatch,' temptmp/',boatName,'_',palabosIterNumPadded,'.stl']);
+            system(['cp tmp/',previousMatch,' tmp/',boatName,'_',palabosIterNumPadded,'.stl']);
         end
     end
 end

@@ -14,6 +14,9 @@ filenameSTL = 'dv15';  % Also save a filename_init.stl file, as this one will be
                 0.8;   % y.
                 0.0;]; % z.
 
+% ARE YOU RESTARTING?
+restarting = true;
+
 % Calculate number of submits.
 numOfSims = maxTime/dt-1;
     tNext = dt;
@@ -30,7 +33,11 @@ numOfSims = maxTime/dt-1;
 % end
 
 %% SUBMIT INITIAL SIMULATION.
-[status,cmdout] = system('sbatch batchfile_init.job');
+if restarting == true
+    [status,cmdout] = system('sbatch batchfile.job');
+else
+    [status,cmdout] = system('sbatch batchfile_init.job');
+end
 % Find job ID from cmdout.
 jobID = funcFindJobID(cmdout);
 slurmOutName = strcat('slurm-',jobID,'.out');
@@ -85,6 +92,8 @@ system(['scancel ',jobID]);
 system(['mv slurm-',jobID,'.out tmp/']);
 % Replace moved .stl file with initial .stl file for next run.
 system(['cp ',filenameSTL,'_init.stl ',filename,'.stl']);
+% Fill in Palabos output iterations that do not have a corresponding boat.stl file.
+funcFillBoatStlGaps(); 
 
 fprintf('\n\n');
 fprintf('           %%-------------------------------------------%%\n');
