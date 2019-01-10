@@ -1,6 +1,7 @@
 *.stl
 *.out
 checkpoint_*
+continue.xml
 slurm-*
 submit-*
 boatHullFormSolver.o
