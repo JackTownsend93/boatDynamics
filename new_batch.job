@@ -18,6 +18,7 @@
 
 #now run normal batch commands
 module load Matlab_Swansea/R2017b
+module load openmpi/gnu/2.0.2.10
 
 #Run the executable
 echo Job started.

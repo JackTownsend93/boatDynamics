@@ -32,7 +32,7 @@
         <y>  0.0   0.1 </y>
         <z>  0.0   0.1 </z>
     </waveDomain>
-    <maxIter> 100 </maxIter>
+    <maxIter> 500 </maxIter>
     <cSmago> 0.11 </cSmago>
     <strongRepelling> false </strongRepelling>
     <ambientPressure> 0.0 </ambientPressure>
@@ -40,7 +40,7 @@
 <output>
     <outDir> ./tmp </outDir>
     <statIter> 10 </statIter>
-    <outIter> 100 </outIter>
+    <outIter> 50 </outIter>
     <cpIter> 499 </cpIter>
     <abIter> -1 </abIter>
     <excludeInteriorForOutput> true </excludeInteriorForOutput>

@@ -15,7 +15,7 @@ filenameSTL = 'dv15';  % Also save a filename_init.stl file, as this one will be
 numOfSims = maxTime/dt-1;
 
 % Read params_template for critical values.
-[charL, resolution, uLB, uRef, outIter, cpIter] = funcReadParamVals('params_template.xml')
+[charL, resolution, uLB, uRef, outIter, cpIter] = funcReadParamVals('params_template.xml');
 
 % Calculate number of iterations per Palabos simulation.
 % dx_palabos = charL/(resolution-1);
@@ -31,7 +31,7 @@ for i = 1: numOfSims
 	
 	% Execute solver.
 	% On initial sim, do not use continue.xml as an input arg.
-	if ~restarting && i = 1;
+	if i == 1 && ~restarting;
 		system(sprintf('mpiexec ./boatHullFormSolver params.xml > sim-%d.out',i));
 	else	
 		system(sprintf('mpiexec ./boatHullFormSolver params.xml continue.xml > sim-%d.out',i));
