@@ -21,7 +21,7 @@
 <solver>
     <inflationParameter> 0.0 </inflationParameter>
     <characteristicLength> 15.0 </characteristicLength>
-    <resolution> 401 </resolution>
+    <resolution> 31 </resolution>
     <inletVelocity> 20.0 </inletVelocity>
     <uRef> 20.0 </uRef>
     <uLB> 0.01 </uLB>
@@ -32,17 +32,17 @@
         <y>  0.0   0.1 </y>
         <z>  0.0   0.1 </z>
     </waveDomain>
-    <maxIter> 1000000 </maxIter>
+    <maxIter> 100 </maxIter>
     <cSmago> 0.11 </cSmago>
     <strongRepelling> false </strongRepelling>
     <ambientPressure> 0.0 </ambientPressure>
 </solver>
 <output>
     <outDir> ./tmp </outDir>
-    <statIter> 100 </statIter>
-    <outIter> 500 </outIter>
-    <cpIter> -1 </cpIter>
-    <abIter> 16 </abIter>
+    <statIter> 10 </statIter>
+    <outIter> 100 </outIter>
+    <cpIter> 499 </cpIter>
+    <abIter> -1 </abIter>
     <excludeInteriorForOutput> true </excludeInteriorForOutput>
     <numPresLaplaceIter> 0 </numPresLaplaceIter>
     <outputInDomain> false </outputInDomain>

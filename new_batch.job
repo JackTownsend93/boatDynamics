@@ -7,9 +7,9 @@
 #job stderr file
 #SBATCH --error=submit-%J.err
 #maximum job time in D-HH:MM
-#SBATCH --time=0-01:00
+#SBATCH --time=0-00:10
 #number of parallel processes (tasks) you are requesting - maps to MPI processes
-#SBATCH --ntasks=10 
+#SBATCH --ntasks=1 
 #memory per process in MB 
 #SBATCH --mem-per-cpu=4000 
 #tasks to run per node (change for hybrid OpenMP/MPI) 

@@ -4,8 +4,6 @@
 restarting = false;
 
 %% DEFINITIONS AND USER INPUT - CHECK THESE BEFORE EACH RUN!
-  paramfile = 'params.xml';         % Input parameters file.
-  batchfile = 'batchfile_init.job'; % Initial batchfile (which does not call "continue.xml" as an input arg).
     maxTime = 10.0;    % Length of overall dynamic sim.
          dt =  0.05;   % Time of each component hydro sim.
 filenameSTL = 'dv15';  % Also save a filename_init.stl file, as this one will be overwritten.
@@ -16,20 +14,31 @@ filenameSTL = 'dv15';  % Also save a filename_init.stl file, as this one will be
 % Calculate number of submits.
 numOfSims = maxTime/dt-1;
 
-max_iter = 100;
+% Read params_template for critical values.
+[charL, resolution, uLB, uRef, outIter, cpIter] = funcReadParamVals('params_template.xml')
+
+% Calculate number of iterations per Palabos simulation.
+% dx_palabos = charL/(resolution-1);
+% dt_palabos = uLB*dx_palabos/uRef;
+max_iter = 500; % Calc this later, predefined for now.
 
 %% SUBMISSION LOOP.
-for i = 1: numOfSims 
+for i = 1: numOfSims
+	%iterNum =  
 	% Remove old params.xml file and write new one using template.
 	system('rm -f params.xml');
-	system(''); % Write max_iter value to MAX_ITER of params_template and save as params.xml.
-
-	% Execute solver.
-	system('mpiexec ./boatHullFormSolver params.xml continue.xml'); % BUT DO NOT SUBMIT WITH continue.xml IF IT IS FIRST JOB OF A NON-RESTART SIM.
+	system(sprintf('sed ''s/MAX_ITER/%d/g'' params_template.xml > params.xml',max_iter));
 	
-	% Begin restart: start checkpointing process.
+	% Execute solver.
+	% On initial sim, do not use continue.xml as an input arg.
+	if ~restarting && i = 1;
+		system(sprintf('mpiexec ./boatHullFormSolver params.xml > sim-%d.out',i));
+	else	
+		system(sprintf('mpiexec ./boatHullFormSolver params.xml continue.xml > sim-%d.out',i));
+	end
+	
+	% Delete old checkpoint files (requires knowing last iter num).
 	%system('rm checkpoint_*'); % Delete old checkpoint files first.
-	%system('touch abort');     % Trigger checkpointing by creating abort file.
 
 	% DYNAMICS.
 	% Dynamics function will determine the rotation and z-displacement.

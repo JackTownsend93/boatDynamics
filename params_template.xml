@@ -40,7 +40,7 @@
 <output>
     <outDir> ./tmp </outDir>
     <statIter> 10 </statIter>
-    <outIter> 100 </outIter>
+    <outIter> 50 </outIter>
     <cpIter> 499 </cpIter>
     <abIter> -1 </abIter>
     <excludeInteriorForOutput> true </excludeInteriorForOutput>
