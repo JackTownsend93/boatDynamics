@@ -1,18 +1,18 @@
 %% Script to automate boatHullFormSolver submissions.
 
 % ARE YOU RESTARTING?
-restarting = false;
+restarting = true;
 
 %% DEFINITIONS AND USER INPUT - CHECK THESE BEFORE EACH RUN!
-    maxTime = 10.0;    % Length of overall dynamic sim.
-         dt =  0.05;   % Time of each component hydro sim.
+    maxTime =  2.5;    % Length of overall dynamic sim.
+         dt =  0.5;   % Time of each component hydro sim.
 filenameSTL = 'dv15';  % Also save a filename_init.stl file, as this one will be overwritten.
        CofG = [-6.0;   % x.
                 0.8;   % y.
                 0.0;]; % z.
 
 % Calculate number of submits.
-numOfSims = maxTime/dt-1;
+numOfSims = maxTime/dt;
 
 % Read params_template for critical values.
 [charL, resolution, uLB, uRef, outIter, cpIter] = funcReadParamVals('params_template.xml');
@@ -20,15 +20,20 @@ numOfSims = maxTime/dt-1;
 % Calculate number of iterations per Palabos simulation.
 % dx_palabos = charL/(resolution-1);
 % dt_palabos = uLB*dx_palabos/uRef;
-max_iter = 500; % Calc this later, predefined for now.
+max_iter_per_sim = 500;       % CALC THIS LATER, predefined for now.
+stat_iter = 10;               % round(max_iter_per_sim/10); % Rate of Palabos iteration status write to output file.
+out_iter  = 50;               % round(max_iter_per_sim/5);  % Rate of Palabos iteration full output to disk.
+cp_iter   = max_iter_per_sim; % max_iter_per_sim;           % Rate of checkpointing (once at the end of each sim).
 
 %% SUBMISSION LOOP.
 for i = 1: numOfSims
-	%iterNum =  
-	% Remove old params.xml file and write new one using template.
+	% Calculate sim-specific iteration to terminate.
+	max_iter = max_iter_per_sim*i+1;
+
+	% Stream values to params.xml file from params_template.xml file.
 	system('rm -f params.xml');
-	system(sprintf('sed ''s/MAX_ITER/%d/g'' params_template.xml > params.xml',max_iter));
-	
+	system(sprintf('sed ''s/MAX_ITER/%d/; s/STAT_ITER/%d/; s/OUT_ITER/%d/; s/CP_ITER/%d/'' params_template.xml > params.xml',max_iter,stat_iter,out_iter,cp_iter));
+		
 	% Execute solver.
 	% On initial sim, do not use continue.xml as an input arg.
 	if i == 1 && ~restarting;
@@ -37,8 +42,10 @@ for i = 1: numOfSims
 		system(sprintf('mpiexec ./boatHullFormSolver params.xml continue.xml > sim-%d.out',i));
 	end
 	
+	system(sprintf('echo sim-%d has finished.',i));
+	
 	% Delete old checkpoint files (requires knowing last iter num).
-	%system('rm checkpoint_*'); % Delete old checkpoint files first.
+	% system('rm checkpoint_*'); % Delete old checkpoint files first.
 
 	% DYNAMICS.
 	% Dynamics function will determine the rotation and z-displacement.

@@ -22,5 +22,5 @@ module load mpi/mpich/3.2
 
 #Run the executable
 echo Job started.
-mpiexec ./boatHullFormSolver params.xml #continue.xml
+mpiexec ./boatHullFormSolver params.xml continue.xml
 echo Job finished.

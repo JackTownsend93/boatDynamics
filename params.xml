@@ -32,16 +32,16 @@
         <y>  0.0   0.1 </y>
         <z>  0.0   0.1 </z>
     </waveDomain>
-    <maxIter> 500 </maxIter>
+    <maxIter> 2501 </maxIter>
     <cSmago> 0.11 </cSmago>
     <strongRepelling> false </strongRepelling>
     <ambientPressure> 0.0 </ambientPressure>
 </solver>
 <output>
     <outDir> ./tmp </outDir>
-    <statIter> 10 </statIter>
+    <statIter> 10  </statIter>
     <outIter> 50 </outIter>
-    <cpIter> 499 </cpIter>
+    <cpIter> 500 </cpIter>
     <abIter> -1 </abIter>
     <excludeInteriorForOutput> true </excludeInteriorForOutput>
     <numPresLaplaceIter> 0 </numPresLaplaceIter>

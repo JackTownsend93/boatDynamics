@@ -39,9 +39,9 @@
 </solver>
 <output>
     <outDir> ./tmp </outDir>
-    <statIter> 10 </statIter>
-    <outIter> 50 </outIter>
-    <cpIter> 499 </cpIter>
+    <statIter> STAT_ITER  </statIter>
+    <outIter> OUT_ITER </outIter>
+    <cpIter> CP_ITER </cpIter>
     <abIter> -1 </abIter>
     <excludeInteriorForOutput> true </excludeInteriorForOutput>
     <numPresLaplaceIter> 0 </numPresLaplaceIter>
