@@ -76,17 +76,35 @@ for i = 1+restartIter: numOfSims+restartIter
 	% CofG = funcManipulateSTL(filenameSTL, CofG, rotation_deg, zDisplacement_m);
 end
 
-%% FINALISE.
+%% CLEAN UP.
 % Replace moved .stl file with initial .stl file for next run.
 system(['cp ',filenameSTL,'_init.stl ',filenameSTL,'.stl']);
 % Fill in Palabos output iterations that do not have a corresponding boat.stl file.
-% funcFillBoatStlGaps(); 
+funcFillBoatStlGaps(); 
+% Move the params.xml file to /tmp.
+system('mv params.xml tmp/');
 
 fprintf('\n\n');
 fprintf('           %%-------------------------------------------%%\n');
 fprintf('           The auto submission process is COMPLETE:-\n');
-fprintf('                        Total time: %f seconds.\n', maxTime);
-fprintf('             Time between restarts: %f seconds.\n', dt);
-fprintf('              Total number of sims: %d.\n', numOfSims);
+fprintf('           ');
+fprintf('                     Boat geometry: %s', filenameSTL);
+fprintf('           ');
+fprintf('                     Starting time: %f s.\n', restartTime);
+fprintf('                    Finishing time: %f s.\n', restartTime+maxTime);
+fprintf('                        Total time: %f s.\n', maxTime);
+fprintf('             Time between restarts: %f s.\n', dt);
+fprintf('              Total number of sims: %d .\n', numOfSims);
+fprintf('           ');
+fprintf('           Palabos Stats:');
+fprintf('                        Palabos dt: %f s.\n', dt_palabos);
+fprintf('                        Palabos dx: %f s.\n', dx_palabos);
+fprintf('                        Resolution: %d .\n', resolution);
+fprintf('             Characteristic Length: %f m.\n', charL);
+fprintf('                     Lattice Speed: %f m/s.\n', uLB);
+fprintf('                   Reference Speed: %f m/s.\n', uRef);
+fprintf('            Rate of output to disk: %d iterations', outIter);
+fprintf('           ');
+fprintf('           ');
 fprintf('           %%-------------------------------------------%%\n');
 fprintf('\n\n');
