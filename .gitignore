@@ -2,6 +2,7 @@
 *.out
 checkpoint_*
 continue.xml
+params.xml
 slurm-*
 submit-*
 boatHullFormSolver.o
