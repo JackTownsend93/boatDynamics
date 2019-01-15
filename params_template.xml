@@ -4,11 +4,11 @@
     <simulationDomain>
         <x> -15.0    8.0 </x>
         <y>  -2.0    5.0 </y>
-        <z>  -4.5    4.5 </z>
+        <z>  -6.0    6.0 </z>
     </simulationDomain>
     <inletAbsorbingZoneWidth> 1.0 </inletAbsorbingZoneWidth>
     <outletAbsorbingZoneWidth> 1.0 </outletAbsorbingZoneWidth>
-    <lateralAbsorbingZoneWidth> 0.5 </lateralAbsorbingZoneWidth>
+    <lateralAbsorbingZoneWidth> 1.0 </lateralAbsorbingZoneWidth>
     <topAbsorbingZoneWidth> 0.1 </topAbsorbingZoneWidth>
     <fluidHeight> 2.0 </fluidHeight>
     <boatStl> dv15.stl </boatStl>
@@ -21,7 +21,7 @@
 <solver>
     <inflationParameter> 0.0 </inflationParameter>
     <characteristicLength> 15.0 </characteristicLength>
-    <resolution> 31 </resolution>
+    <resolution> 101 </resolution>
     <inletVelocity> 20.0 </inletVelocity>
     <uRef> 20.0 </uRef>
     <uLB> 0.01 </uLB>

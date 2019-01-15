@@ -3,11 +3,11 @@
 %% DEFINITIONS AND USER INPUT - CHECK THESE BEFORE EACH RUN!
 % General.
 filenameSTL = 'dv15';  % .stl filename, no file extension.
-restarting = false;     % Restarting from a continue.xml file? NOTE: Use same maxTime and dt if so.
+restarting = false;    % Restarting from a continue.xml file? NOTE: Use same maxTime and dt if so.
 
 % Dynamics.
-maxTime =  2.5;    % Length of overall dynamic sim.
-     dt =  0.5;    % Time of each component hydro sim.
+maxTime =  30.0;   % Length of overall dynamic sim.
+     dt =  0.5;   % Time of each component hydro sim.
    CofG = [-6.0;   % x.
             0.8;   % y.
             0.0;]; % z.
@@ -27,10 +27,12 @@ out_iter  = round(max_iter_per_sim/5);   % Rate of Palabos iteration full output
 cp_iter   = max_iter_per_sim;            % Rate of checkpointing (once at the end of each sim).
 % If restarting, fine the time at which the last sim finished.
 if restarting
-	[restartIter,restartTime] = funcReadLastSim()
+	[restartIter,restartTime] = funcReadLastSim();
 else
 	restartIter = 0; restartTime = 0;
 end
+
+j = 0; % Temporary preset motion variable.
 
 %% SUBMISSION LOOP.
 for i = 1+restartIter: numOfSims+restartIter
@@ -41,19 +43,19 @@ for i = 1+restartIter: numOfSims+restartIter
 	system('rm -f params.xml');
 	system(sprintf('sed ''s/MAX_ITER/%d/; s/STAT_ITER/%d/; s/OUT_ITER/%d/; s/CP_ITER/%d/'' params_template.xml > params.xml',max_iter_this_sim+1,stat_iter,out_iter,cp_iter)); % +1 to max_iter_this_sim to ensure checkpointing occurs correctly.
 	
-	system(sprintf('echo sim-%08d running...',i));
-	system(sprintf('echo sim-%08d:    iterations: %d - %d.\n',i,max_iter_this_sim-max_iter_per_sim,max_iter_this_sim));
-	system(sprintf('echo sim-%08d:          time: %.3f - %.3f.\n',i,dt*i-dt,dt*i));
+	system(sprintf('echo sim-%08d: running...',i));
+	system(sprintf('echo sim-%08d: iterations: %d - %d.\n',i,max_iter_this_sim-max_iter_per_sim,max_iter_this_sim));
+	system(sprintf('echo sim-%08d:       time: %.3f - %.3f s.\n',i,dt*i-dt,dt*i));
 
 	% Execute solver.
-	% On initial sim, do not use continue.xml as an input arg (unless restarting from existing continue.xml file).
+	% On initial sim, do not use continue.xml as an input unless restarting from existing continue.xml file.
 	if i == 1+restartIter && ~restarting;
 		system(sprintf('mpiexec ./boatHullFormSolver params.xml > sim-%08d.out',i));
 	else	
 		system(sprintf('mpiexec ./boatHullFormSolver params.xml continue.xml > sim-%08d.out',i));
 	end
 
-	system(sprintf('echo sim-%08d has finished.',i));
+	system(sprintf('echo sim-%08d: COMPLETE.',i));
 	
 	% Delete old checkpoint files (requires knowing last iter num).
 	if i+restartIter > 1 % No checkpoint files on initial loop.
@@ -70,10 +72,11 @@ for i = 1+restartIter: numOfSims+restartIter
 	% DYNAMICS.
 	% Dynamics function will determine the rotation and z-displacement.
 	% [SET MANUALLY, FOR NOW]:
-	% rotation_deg = 0.50*cosd(10*i);
-	% zDisplacement_m   = 0.08*sind(10*i);
+	j = j+1;
+	rotation_deg = 0.50*cosd(10*j);
+	zDisplacement_m = 0.05*sind(10*j);
 	% Tranform current STL CofG to origin.
-	% CofG = funcManipulateSTL(filenameSTL, CofG, rotation_deg, zDisplacement_m);
+	CofG = funcManipulateSTL(filenameSTL, CofG, rotation_deg, zDisplacement_m);
 end
 
 %% CLEAN UP.
@@ -87,24 +90,24 @@ system('mv params.xml tmp/');
 fprintf('\n\n');
 fprintf('           %%-------------------------------------------%%\n');
 fprintf('           The auto submission process is COMPLETE:-\n');
-fprintf('           ');
-fprintf('                     Boat geometry: %s', filenameSTL);
-fprintf('           ');
+fprintf('           \n');
+fprintf('                          Geometry: %s.\n', filenameSTL);
+fprintf('           \n');
 fprintf('                     Starting time: %f s.\n', restartTime);
 fprintf('                    Finishing time: %f s.\n', restartTime+maxTime);
 fprintf('                        Total time: %f s.\n', maxTime);
 fprintf('             Time between restarts: %f s.\n', dt);
-fprintf('              Total number of sims: %d .\n', numOfSims);
-fprintf('           ');
-fprintf('           Palabos Stats:');
+fprintf('              Total number of sims: %d.\n', numOfSims);
+fprintf('           \n');
+fprintf('           Palabos Stats:\n');
 fprintf('                        Palabos dt: %f s.\n', dt_palabos);
 fprintf('                        Palabos dx: %f s.\n', dx_palabos);
-fprintf('                        Resolution: %d .\n', resolution);
-fprintf('             Characteristic Length: %f m.\n', charL);
-fprintf('                     Lattice Speed: %f m/s.\n', uLB);
-fprintf('                   Reference Speed: %f m/s.\n', uRef);
-fprintf('            Rate of output to disk: %d iterations', outIter);
-fprintf('           ');
-fprintf('           ');
+fprintf('                        Resolution: %d.\n', resolution);
+fprintf('             Characteristic length: %f m.\n', charL);
+fprintf('                     Lattice speed: %f m/s.\n', uLB);
+fprintf('                   Reference speed: %f m/s.\n', uRef);
+fprintf('            Rate of output to disk: %d iterations.\n', out_iter);
+fprintf('           \n');
+fprintf('           \n');
 fprintf('           %%-------------------------------------------%%\n');
 fprintf('\n\n');
