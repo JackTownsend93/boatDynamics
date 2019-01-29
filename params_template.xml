@@ -21,7 +21,7 @@
 <solver>
     <inflationParameter> 0.0 </inflationParameter>
     <characteristicLength> 15.0 </characteristicLength>
-    <resolution> 101 </resolution>
+    <resolution> 401 </resolution>
     <inletVelocity> 20.0 </inletVelocity>
     <uRef> 20.0 </uRef>
     <uLB> 0.01 </uLB>
