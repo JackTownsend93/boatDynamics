@@ -7,7 +7,7 @@
 %% DEFINITIONS AND USER INPUT - CHECK THESE BEFORE EACH RUN!
   paramfile = 'params.xml';         % Input parameters file.
   batchfile = 'batchfile_init.job'; % Initial batchfile (which does not call "continue.xml" as an input arg).
-    maxTime = 10.0;    % Length of overall dynamic sim.
+    maxTime =  5.0;    % Length of overall dynamic sim.
          dt =  0.05;   % Time of each component hydro sim.
 filenameSTL = 'dv15';  % Also save a filename_init.stl file, as this one will be overwritten.
        CofG = [-6.0;   % x.
@@ -61,6 +61,8 @@ while i <= numOfSims
             
             % DYNAMICS.
             % Dynamics function will determine the rotation and z-displacement.
+            
+            
 	    % [SET MANUALLY, FOR NOW]:
 	         rotation_deg = 0.50*cosd(10*i);
             zDisplacement_m   = 0.08*sind(10*i);

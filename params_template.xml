@@ -4,7 +4,7 @@
     <simulationDomain>
         <x> -15.0    8.0 </x>
         <y>  -2.0    5.0 </y>
-        <z>  -6.0    6.0 </z>
+        <z>  -3.0    3.0 </z>
     </simulationDomain>
     <inletAbsorbingZoneWidth> 1.0 </inletAbsorbingZoneWidth>
     <outletAbsorbingZoneWidth> 1.0 </outletAbsorbingZoneWidth>
@@ -21,7 +21,7 @@
 <solver>
     <inflationParameter> 0.0 </inflationParameter>
     <characteristicLength> 15.0 </characteristicLength>
-    <resolution> 401 </resolution>
+    <resolution> 31 </resolution>
     <inletVelocity> 20.0 </inletVelocity>
     <uRef> 20.0 </uRef>
     <uLB> 0.01 </uLB>

@@ -1,9 +1,14 @@
-function [restartIter,restartTime] = funcReadLastSim()
+function [restartIter,restartTime] = funcReadLastSim(restarting)
 % Reads the iteration value of the existing continue.xml file in the instance of restarting.
 
 % Find latest sim-xxxxxxxx.out file in /tmp and open for reading.
 simFiles = dir('tmp/sim-*');
 simFiles = struct2cell(simFiles);
+% Check if sim files exist in case of restarting.
+if restarting && isempty(simFiles)
+	fprintf('%s: No previous sim data found, check "restarting" value.\n',mfilename);
+end
+% Pick out restart iteration from sim files.
 numSimFiles = size(simFiles);
 simFilesLast = simFiles{1,numSimFiles(2)};
 restartIter = str2num(cell2mat(regexp(simFilesLast,'\d*','Match')));

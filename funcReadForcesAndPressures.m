@@ -1,4 +1,4 @@
-function [x_forceAvg, y_forceAvg, pressureCoords, pressureData] = funcReadForcesAndPressures(vertices,vertexNormals)
+function [x_forceAvg, y_forceAvg, pressureCoords, pressureConnecs, pressureData] = funcReadForcesAndPressures(vertices,vertexNormals)
 %% Reads forces and pressures from Palabos outputs.
 % Forces are contained in total_force_on_boat.dat file in /tmp.
 % Pressures are contained in boat_pressure_xxxxxxxx.vtk (xxxxxxxx =
@@ -83,6 +83,23 @@ for i = 1:numPoints
     pressureCoords(i,:) = str2double(line);
 end
 
+% Skip a line.
+fgetl(fid);
+
+% Read number of connectivities.
+line = fgetl(fid);
+numConnecs = strsplit(line);
+numConnecs = str2double(numConnecs{2});
+
+% Read connectivities.
+fprintf('%s: Reading connectivities...\n',mfilename);
+pressureConnecs = zeros(numConnecs,4);
+for i = 1:numConnecs
+	line = strsplit(fgetl(fid));
+	pressureConnecs(i,:) = str2double(line);
+end
+pressureConnecs = pressureConnecs(:,2:4); % First column is redundant.
+
 % Read up to "POINT_DATA" and check that numPoint == numPressures.
 regexpFound = [];
 while isempty(regexpFound)
@@ -110,9 +127,9 @@ end
 
 % DEBUGGING: Plotting pressure at coords.
 %scatter3(pressureCoords(:,1),pressureCoords(:,2),pressureCoords(:,3),1,pressureData(:,1));
-quiver3(vertices(:,1),vertices(:,2),vertices(:,3),vertexNormals(:,1),vertexNormals(:,2),vertexNormals(:,3));
-axis equal;
-hold on;
+%quiver3(vertices(:,1),vertices(:,2),vertices(:,3),vertexNormals(:,1),vertexNormals(:,2),vertexNormals(:,3));
+%axis equal;
+%hold on;
 
 fclose(fid);
 

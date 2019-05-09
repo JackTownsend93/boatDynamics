@@ -6,7 +6,7 @@ filenameSTL = 'dv15';  % .stl filename, no file extension.
 restarting = false;    % Restarting from a continue.xml file? NOTE: Use same maxTime and dt if so.
 
 % Dynamics.
-maxTime =   1.5;   % Length of overall dynamic sim.
+maxTime =   2.5;   % Length of overall dynamic sim.
      dt =  0.05;   % Time of each component hydro sim.
    CofG = [-6.0;   % x.
             0.8;   % y.
@@ -27,7 +27,7 @@ out_iter  = round(max_iter_per_sim/5);   % Rate of Palabos iteration full output
 cp_iter   = max_iter_per_sim;            % Rate of checkpointing (once at the end of each sim).
 % If restarting, fine the time at which the last sim finished.
 if restarting
-	[restartIter,restartTime] = funcReadLastSim();
+	[restartIter,restartTime] = funcReadLastSim(restarting);
 else
 	restartIter = 0; restartTime = 0;
 end
@@ -50,9 +50,9 @@ for i = 1+restartIter : numOfSims+restartIter
 	% Execute solver.
 	% On initial sim, do not use continue.xml as an input unless restarting from existing continue.xml file.
 	if i == 1+restartIter && ~restarting;
-		system(sprintf('./boatHullFormSolver params.xml > sim-%08d.out',i));
+		system(sprintf('srun ./boatHullFormSolver params.xml > sim-%08d.out',i));
 	else	
-		system(sprintf('./boatHullFormSolver params.xml continue.xml > sim-%08d.out',i));
+		system(sprintf('srun ./boatHullFormSolver params.xml continue.xml > sim-%08d.out',i));
 	end
 
 	system(sprintf('echo sim-%08d: COMPLETE.',i));
@@ -71,12 +71,22 @@ for i = 1+restartIter : numOfSims+restartIter
 	
 	% DYNAMICS.
 	% Dynamics function will determine the rotation and z-displacement.
-	% [SET MANUALLY, FOR NOW]:
+	% PRE-DETERMINED MOTION, FOR NOW.
 	j = j+1;
 	rotation_deg = 0.50*cosd(10*j);
 	zDisplacement_m = 0.05*sind(10*j);
+	
+	% Read .stl vertices and vertex normals.
+	[vertices, vertexNormals] = funcReadVertices(filenameSTL);
+	% Read forces and pressures.
+	[x_forceAvg, y_forceAvg, pressureCoords, pressureConnecs, pressureData] = funcReadForcesAndPressures(vertices,vertexNormals);
+	% Use dual mesh to acquire areas associated with pressures.
+	[pressureAreas] = funcDualMesh(pressureCoords, pressureConnecs, pressureData);
+	% Calculate moment.
+	 
 	% Tranform current STL CofG to origin.
-	CofG = funcManipulateSTL(filenameSTL, CofG, rotation_deg, zDisplacement_m);
+	[CofG, iterationNum] = funcManipulateSTL(filenameSTL, CofG, rotation_deg, zDisplacement_m);
+		
 end
 
 %% CLEAN UP.
