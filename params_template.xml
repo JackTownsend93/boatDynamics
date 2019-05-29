@@ -2,15 +2,15 @@
 <root>
 <geometry>
     <simulationDomain>
-        <x> -15.0    8.0 </x>
-        <y>  -2.0    5.0 </y>
-        <z>  -3.0    3.0 </z>
+        <x> -16.0    5.0 </x>
+        <y>  -4.0    5.0 </y>
+        <z>  -4.0    4.0 </z>
     </simulationDomain>
     <inletAbsorbingZoneWidth> 1.0 </inletAbsorbingZoneWidth>
     <outletAbsorbingZoneWidth> 1.0 </outletAbsorbingZoneWidth>
     <lateralAbsorbingZoneWidth> 1.0 </lateralAbsorbingZoneWidth>
-    <topAbsorbingZoneWidth> 0.1 </topAbsorbingZoneWidth>
-    <fluidHeight> 2.0 </fluidHeight>
+    <topAbsorbingZoneWidth> 0.3 </topAbsorbingZoneWidth>
+    <fluidHeight> 4.0 </fluidHeight>
     <boatStl> dv15.stl </boatStl>
 </geometry>
 <fluid>
@@ -21,7 +21,7 @@
 <solver>
     <inflationParameter> 0.0 </inflationParameter>
     <characteristicLength> 15.0 </characteristicLength>
-    <resolution> 31 </resolution>
+    <resolution> 51 </resolution>
     <inletVelocity> 20.0 </inletVelocity>
     <uRef> 20.0 </uRef>
     <uLB> 0.01 </uLB>
@@ -64,7 +64,7 @@
             <xRange> -100.0 100.0 </xRange>
         </ySlices>
         <zSlices>
-            <zPositions>  </zPositions>
+            <zPositions> 0.0 </zPositions>
             <xRange> -100.0 100.0 </xRange>
             <yRange> -100.0 100.0 </yRange>
         </zSlices>

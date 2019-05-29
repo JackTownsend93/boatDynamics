@@ -1,15 +1,15 @@
 #!/bin/bash --login
 ###
 #job name
-#SBATCH --job-name=submit
+#SBATCH --job-name=rbd
 #job stdout file
 #SBATCH --output=submit-%J.out
 #job stderr file
 #SBATCH --error=submit-%J.err
 #maximum job time in D-HH:MM
-#SBATCH --time=0-00:10
+#SBATCH --time=0-10:00
 #number of parallel processes (tasks) you are requesting - maps to MPI processes
-#SBATCH --ntasks=10 
+#SBATCH --ntasks=40
 #memory per process in MB 
 #SBATCH --mem-per-cpu=4000 
 #tasks to run per node (change for hybrid OpenMP/MPI) 
@@ -17,10 +17,11 @@
 ###
 
 #now run normal batch commands
+module purge
 module load hpcw
 module load Matlab_Swansea/R2017b
-#module load openmpi/gnu/2.0.2.10
-#module load mpi/mpich/3.2
+module load openmpi
+module load compiler/intel 
 
 #Run the executable
 echo Job started.

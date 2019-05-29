@@ -6,11 +6,12 @@ filenameSTL = 'dv15';  % .stl filename, no file extension.
 restarting = false;    % Restarting from a continue.xml file? NOTE: Use same maxTime and dt if so.
 
 % Dynamics.
-maxTime =   2.5;   % Length of overall dynamic sim.
+maxTime =   5.0;   % Length of overall dynamic sim.
      dt =  0.05;   % Time of each component hydro sim.
    CofG = [-6.0;   % x.
             0.8;   % y.
             0.0;]; % z.
+m_boat = 10000; % Mass of boat (kg).
 
 %% CALCULATE FROM INPUTS.
 % Calculate number of submits.
@@ -73,9 +74,10 @@ for i = 1+restartIter : numOfSims+restartIter
 	% Dynamics function will determine the rotation and z-displacement.
 	% PRE-DETERMINED MOTION, FOR NOW.
 	j = j+1;
-	rotation_deg = 0.50*cosd(10*j);
-	zDisplacement_m = 0.05*sind(10*j);
-	
+        t = dt*(i-1);
+        rotation_deg    = 0.12*cosd(200*t);
+        zDisplacement_m = 0.03*sind(200*t);
+        	
 	% Read .stl vertices and vertex normals.
 	[vertices, vertexNormals] = funcReadVertices(filenameSTL);
 	% Read forces and pressures.
@@ -83,10 +85,14 @@ for i = 1+restartIter : numOfSims+restartIter
 	% Use dual mesh to acquire areas associated with pressures.
 	[pressureAreas] = funcDualMesh(pressureCoords, pressureConnecs, pressureData);
 	% Calculate moment.
-	 
+	[M_z] = funcCalculateMoment(CofG, vertexNormals, pressureCoords, pressureData, pressureAreas)
+        
+        % Determine boat motion.
+        [rotation_deg, zDisplacement_m] = funcMoveBoat(dt, y_forceAvg, M_z, m_boat);
+         
 	% Tranform current STL CofG to origin.
 	[CofG, iterationNum] = funcManipulateSTL(filenameSTL, CofG, rotation_deg, zDisplacement_m);
-		
+        	
 end
 
 %% CLEAN UP.

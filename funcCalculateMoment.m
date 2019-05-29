@@ -1,4 +1,4 @@
-function [M] = funcCalculateMoment(CofG, vertexNormals, pressureCoords, pressureData)
+function [M_z] = funcCalculateMoment(CofG, vertexNormals, pressureCoords, pressureData, pressureAreas)
 % Calculates the moment in about the z-axis.
 
 % Calculate forces from pressure data.
