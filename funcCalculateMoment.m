@@ -1,10 +1,10 @@
-function [M_z] = funcCalculateMoment(CofG, vertexNormals, pressureCoords, pressureData, pressureAreas)
+function [M_z] = funcCalculateMoment(CofG, pressureVertexNormals, pressureCoords, pressureData, pressureAreas)
 % Calculates the moment in about the z-axis.
 
 % Calculate forces from pressure data.
-f = pressureData.*pressureAreas;      % Scalar force at each point.
-f_vec = [f,f,f].*pressureVertexNorms; % Apply magnitude to unit normals.
-f_res = f'*pressureVertexNorms;       % Calculate resulatant force components to validate against Palabos values.
+f = pressureData.*pressureAreas;    % Scalar force at each point.
+f_vec = [f,f,f].*pressureVertexNormals;     % Apply magnitude to unit normals.
+f_res = f'*pressureVertexNormals;           % Calculate resulatant force components to validate against Palabos values.
 fprintf('Drag:    %f N\nLift:    %f N\nSway:    %f N\n',f_res(1,1),f_res(1,2),f_res(1,3));
 % quiver3(pressureCoords(:,1),pressureCoords(:,2),pressureCoords(:,3),f_vec(:,1),f_vec(:,2),f_vec(:,3)); % Visualise.
 

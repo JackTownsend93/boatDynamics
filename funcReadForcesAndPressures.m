@@ -123,6 +123,9 @@ pressureData = zeros(numPoints,1);
 for i = 1:numPoints
     line = strsplit(fgetl(fid));
     pressureData(i,:) = str2double(line);
+    if mod(i,1000000) == 0
+      fprintf('%s: 1,000,000 of %d pressures read.\n',mfilename,numPoints);
+    end
 end
 
 % DEBUGGING: Plotting pressure at coords.

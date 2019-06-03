@@ -1,4 +1,4 @@
-function [CofG, iterationNum] = funcManipulateSTL(filenameSTL, CofG, rotation_deg, zDisplacement_m)
+function [CofG, iterationNum] = funcManipulateSTL(filenameSTL, CofG, theta, z)
 %% Manipulates the .stl geometry by rotating and transforming in z-direction according to dynamics.
 %  1. Read in .stl file (binary or ASCII).
 %  2. Move whole .stl so that the CofG is at the origin.
@@ -18,9 +18,9 @@ vertices(:,3) = vertices(:,3) - CofG(3);
 
 %% 3. Perform rotation.
 % Define rotation matrix for 3D rotation about the z-axis.
-Rz = [ cosd(rotation_deg), sind(rotation_deg), 0  ;
-      -sind(rotation_deg), cosd(rotation_deg), 0  ;
-                        0,                  0, 1 ];
+Rz = [ cosd(theta), sind(theta), 0  ;
+      -sind(theta), cosd(theta), 0  ;
+                 0,           0, 1 ];
 % Apply rotation to the vertices.
 vertices = vertices * Rz';
 
@@ -30,10 +30,10 @@ vertices(:,2) = vertices(:,2) + CofG(2);
 vertices(:,3) = vertices(:,3) + CofG(3);
 
 %% 5. Z-translation.
-vertices(:,2) = vertices(:,2)+zDisplacement_m;
+vertices(:,2) = vertices(:,2) + z;
 
 %% 6. Transform CofG identically (no rotation required as rotation is effectively about CofG).
-CofG(2) = CofG(2) + zDisplacement_m;
+CofG(2) = CofG(2) + z;
 
 %% 7. Write .stl files.
 % Write an updated .stl file out in working directory.
