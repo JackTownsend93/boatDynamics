@@ -39,12 +39,12 @@
 %%--------------------- DEFINITIONS AND USER INPUT - CHECK THESE BEFORE EACH RUN! --------------------%%
 % General.
 filenameSTL = 'dv15';  % .stl filename, no file extension.
-restarting = false;    % Restarting from a continue.xml file? (NOTE: Use same maxTime and dt if so).
+restarting = true;     % Restarting from a continue.xml file? (NOTE: Use same maxTime and dt if so).
 
 % Dynamics parameters.
-maxTime =   2.5;   % Length of overall dynamic sim.
-     dt =  0.05;   % Time of each component hydro sim.
-   CofG = [-6.0;   % x.
+maxTime =  5.0;    % Length of overall dynamic sim.
+     dt =  0.005;  % Time of each component hydro sim.
+   CofG = [-5.0;   % x.
             0.8;   % y.
             0.0;]; % z.
 m_boat = 10000; % Mass of boat (kg).
@@ -130,10 +130,11 @@ for i = 1+restartIter : numOfSims+restartIter
 	% Read forces and pressures.
 	[x_forceAvg, y_forceAvg, pressureCoords, pressureConnecs, pressureData] = funcReadForcesAndPressures(vertices,vertexNormals);
 	% Use dual mesh to acquire areas associated with pressures.
-	[pressureAreas, pressureVertexNormals] = funcDualMesh(pressureCoords, pressureConnecs, pressureData, filenameSTL);
+	% [pressureAreas, pressureVertexNormals] = funcDualMesh(pressureCoords, pressureConnecs, pressureData, filenameSTL);
 	% Calculate moment.
-	[M_z] = funcCalculateMoment(CofG, pressureVertexNormals, pressureCoords, pressureData, pressureAreas);
-        
+	% [M_z] = funcCalculateMoment(CofG, pressureVertexNormals, pressureCoords, pressureData, pressureAreas);
+        M_z = 0;
+
         % Determine boat motion.
         [theta_diff, theta, theta_dot, z_diff, z, z_dot] = funcMoveBoat(dt, y_forceAvg, M_z, m_boat, Iyy, z, z_dot, theta, theta_dot);
          

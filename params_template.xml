@@ -2,7 +2,7 @@
 <root>
 <geometry>
     <simulationDomain>
-        <x> -16.0   12.0 </x>
+        <x> -18.0   12.0 </x>
         <y>  -5.0    7.0 </y>
         <z>  -6.0    6.0 </z>
     </simulationDomain>
@@ -21,9 +21,9 @@
 <solver>
     <inflationParameter> 0.0 </inflationParameter>
     <characteristicLength> 15.0 </characteristicLength>
-    <resolution> 401 </resolution>
-    <inletVelocity> 20.0 </inletVelocity>
-    <uRef> 20.0 </uRef>
+    <resolution> 301 </resolution>
+    <inletVelocity> 10.0 </inletVelocity>
+    <uRef> 10.0 </uRef>
     <uLB> 0.01 </uLB>
     <A> 0.0 </A>
     <P> 0.04 </P> 
@@ -34,7 +34,7 @@
     </waveDomain>
     <maxIter> MAX_ITER </maxIter>
     <cSmago> 0.11 </cSmago>
-    <strongRepelling> false </strongRepelling>
+    <strongRepelling> true </strongRepelling>
     <ambientPressure> 0.0 </ambientPressure>
 </solver>
 <output>
@@ -51,7 +51,7 @@
         <y>  </y>
         <z>  </z>
     </outputDomain>
-    <outputOnSlices> true </outputOnSlices>
+    <outputOnSlices> false </outputOnSlices>
     <outputSlices>
         <xSlices>
             <xPositions>  </xPositions>

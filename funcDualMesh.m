@@ -1,6 +1,8 @@
 function [pressureAreas, pressureVertexNormals] = funcDualMesh(pressureCoords, pressureConnecs, pressureData, filenameSTL)
 %% Create a dual mesh to find areas associated with each pressure vector.
 
+tStart = tic; % Time the process.
+
 %% Create the dual mesh.
 % Rename for convention.
 pp = pressureCoords;
@@ -25,7 +27,7 @@ for i = 1:length(pressureCoords)
     [idx_dual(i,:),d_dual(i,:)] = knnsearch(tmp_dualCentroids,pressureCoords(i,:));
     % Now eliminate that tmp_dualCentroid row to avoid double 
     % associations.
-    tmp_dualCentroids(idx_dual(i,:),:) = [20,20,20]; % Move well away from being knn'd.
+    tmp_dualCentroids(idx_dual(i,:),:) = []; % Delete this row.
 end
 % Calc some factors to determine inaccuracy of associations.
 % Average Euclidean distance between associations.
@@ -66,6 +68,12 @@ end
 fprintf('Average distance between matches: %f \n',sum(d_norms)/length(d_norms));
 % Maximum distance.
 fprintf('Maximum distance between matches: %f \n',max(d_norms));
+
+% Dual mesh timer.
+tElapsed = toc(tStart);
+tElapsedHours = tElapsed/3600;
+tElapsedMinutes = tElapsed/60;
+fprintf('%s: Time taken for dual mesh process: %dh:%dm:%ds.\n',mfilename,floor(tElapsedHours),floor(mod(tElapsedMinutes,60)),floor(mod(tElapsed,60)));
 
 %% Plots for debugging (comment away when not debugging).
 % Plot original triangulation.
