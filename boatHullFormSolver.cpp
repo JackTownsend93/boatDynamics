@@ -53,11 +53,13 @@ typedef double T;
 #define IN      1
 
 struct SimulationParameters {
+
     /*
      * Parameters set by the user.
      * All user input variables and all data in external input files must be in the same system of units.
      */
 
+    T yVel;
     std::vector<T> xDomain;                     // Extent in the x-direction of the physical simulation domain.
     std::vector<T> yDomain;                     // Extent in the y-direction of the physical simulation domain.
     std::vector<T> zDomain;                     // Extent in the z-direction of the physical simulation domain.
@@ -129,6 +131,7 @@ struct SimulationParameters {
      * Parameters NOT set by the user.
      */
 
+    T yVel_LB;
     plint nx, ny, nz;
     plint fluidHeight_LB;
     Box3D fullDomain;
@@ -189,85 +192,86 @@ void setParameters(std::string xmlInputFileName)
 {
     XMLreader document(xmlInputFileName);
 
-    document["root"]["geometry"]["simulationDomain"]["x"].read(param.xDomain);
+    document["geometry"]["simulationDomain"]["x"].read(param.xDomain);
     plbIOError(param.xDomain.size() != 2 || util::lessEqual(param.xDomain[1], param.xDomain[0]),
             "The x-extent of the simulation domain is wrong.");
-    document["root"]["geometry"]["simulationDomain"]["y"].read(param.yDomain);
+    document["geometry"]["simulationDomain"]["y"].read(param.yDomain);
     plbIOError(param.yDomain.size() != 2 || util::lessEqual(param.yDomain[1], param.yDomain[0]),
             "The y-extent of the simulation domain is wrong.");
-    document["root"]["geometry"]["simulationDomain"]["z"].read(param.zDomain);
+    document["geometry"]["simulationDomain"]["z"].read(param.zDomain);
     plbIOError(param.zDomain.size() != 2 || util::lessEqual(param.zDomain[1], param.zDomain[0]),
             "The z-extent of the simulation domain is wrong.");
 
-    document["root"]["geometry"]["inletAbsorbingZoneWidth"].read(param.inletAbsorbingZoneWidth);
-    document["root"]["geometry"]["outletAbsorbingZoneWidth"].read(param.outletAbsorbingZoneWidth);
-    document["root"]["geometry"]["lateralAbsorbingZoneWidth"].read(param.lateralAbsorbingZoneWidth);
-    document["root"]["geometry"]["topAbsorbingZoneWidth"].read(param.topAbsorbingZoneWidth);
+    document["geometry"]["inletAbsorbingZoneWidth"].read(param.inletAbsorbingZoneWidth);
+    document["geometry"]["outletAbsorbingZoneWidth"].read(param.outletAbsorbingZoneWidth);
+    document["geometry"]["lateralAbsorbingZoneWidth"].read(param.lateralAbsorbingZoneWidth);
+    document["geometry"]["topAbsorbingZoneWidth"].read(param.topAbsorbingZoneWidth);
 
-    document["root"]["geometry"]["fluidHeight"].read(param.fluidHeight);
+    document["geometry"]["fluidHeight"].read(param.fluidHeight);
 
-    document["root"]["geometry"]["boatStl"].read(param.boatStl);
+    document["geometry"]["boatStl"].read(param.boatStl);
 
-    document["root"]["fluid"]["rho"].read(param.rho);
-    document["root"]["fluid"]["nu"].read(param.nu);
-    document["root"]["fluid"]["surfaceTension"].read(param.surfaceTension);
+    document["fluid"]["rho"].read(param.rho);
+    document["fluid"]["nu"].read(param.nu);
+    document["fluid"]["surfaceTension"].read(param.surfaceTension);
 
-    document["root"]["solver"]["inflationParameter"].read(param.inflationParameter);
+    document["solver"]["yVel"].read(param.yVel);
+    document["solver"]["inflationParameter"].read(param.inflationParameter);
     plbIOError(param.inflationParameter < (T) 0 || param.inflationParameter > (T) 1,
             "The inflationParameter must take values between 0 and 1.");
 
-    document["root"]["solver"]["characteristicLength"].read(param.characteristicLength);
-    document["root"]["solver"]["resolution"].read(param.resolution);
+    document["solver"]["characteristicLength"].read(param.characteristicLength);
+    document["solver"]["resolution"].read(param.resolution);
 
-    document["root"]["solver"]["inletVelocity"].read(param.inletVelocity);
+    document["solver"]["inletVelocity"].read(param.inletVelocity);
 
-    document["root"]["solver"]["uRef"].read(param.u_Ref);
-    document["root"]["solver"]["uLB"].read(param.u_LB);
+    document["solver"]["uRef"].read(param.u_Ref);
+    document["solver"]["uLB"].read(param.u_LB);
 
-    document["root"]["solver"]["A"].read(param.A);
-    document["root"]["solver"]["P"].read(param.P);
-    document["root"]["solver"]["waveDomain"]["x"].read(param.xWaveDomain);
+    document["solver"]["A"].read(param.A);
+    document["solver"]["P"].read(param.P);
+    document["solver"]["waveDomain"]["x"].read(param.xWaveDomain);
     plbIOError(param.xWaveDomain.size() != 2 || util::lessEqual(param.xWaveDomain[1], param.xWaveDomain[0]),
             "The x-extent of the wave domain is wrong.");
-    document["root"]["solver"]["waveDomain"]["y"].read(param.yWaveDomain);
+    document["solver"]["waveDomain"]["y"].read(param.yWaveDomain);
     plbIOError(param.yWaveDomain.size() != 2 || util::lessEqual(param.yWaveDomain[1], param.yWaveDomain[0]),
             "The y-extent of the wave domain is wrong.");
-    document["root"]["solver"]["waveDomain"]["z"].read(param.zWaveDomain);
+    document["solver"]["waveDomain"]["z"].read(param.zWaveDomain);
     plbIOError(param.zWaveDomain.size() != 2 || util::lessEqual(param.zWaveDomain[1], param.zWaveDomain[0]),
             "The z-extent of the wave domain is wrong.");
 
-    document["root"]["solver"]["maxIter"].read(param.maxIter);
+    document["solver"]["maxIter"].read(param.maxIter);
 
-    document["root"]["solver"]["cSmago"].read(param.cSmago);
+    document["solver"]["cSmago"].read(param.cSmago);
 
-    document["root"]["solver"]["strongRepelling"].read(param.strongRepelling);
+    document["solver"]["strongRepelling"].read(param.strongRepelling);
 
-    document["root"]["solver"]["ambientPressure"].read(param.ambientPressure);
+    document["solver"]["ambientPressure"].read(param.ambientPressure);
 
     std::string outDir;
-    document["root"]["output"]["outDir"].read(outDir);
+    document["output"]["outDir"].read(outDir);
     if (outDir[outDir.size() - 1] != '/') {
         outDir += '/';
     }
     param.outDir = outDir;
     abortIfCannotCreateFileInDir(param.outDir, "plb-checkfile.txt");
 
-    document["root"]["output"]["statIter"].read(param.statIter);
-    document["root"]["output"]["outIter"].read(param.outIter);
-    document["root"]["output"]["cpIter"].read(param.cpIter);
-    document["root"]["output"]["abIter"].read(param.abIter);
+    document["output"]["statIter"].read(param.statIter);
+    document["output"]["outIter"].read(param.outIter);
+    document["output"]["cpIter"].read(param.cpIter);
+    document["output"]["abIter"].read(param.abIter);
 
-    document["root"]["output"]["excludeInteriorForOutput"].read(param.excludeInteriorForOutput);
-    document["root"]["output"]["numPresLaplaceIter"].read(param.numPresLaplaceIter);
+    document["output"]["excludeInteriorForOutput"].read(param.excludeInteriorForOutput);
+    document["output"]["numPresLaplaceIter"].read(param.numPresLaplaceIter);
 
-    document["root"]["output"]["outputInDomain"].read(param.outputInDomain);
+    document["output"]["outputInDomain"].read(param.outputInDomain);
     if (param.outputInDomain) {
         std::vector<plint> x, y, z;
-        document["root"]["output"]["outputDomain"]["x"].read(x);
+        document["output"]["outputDomain"]["x"].read(x);
         plbIOError(x.size() != 2 || util::lessEqual(x[1], x[0]), "The x-extent of the outputDomain is wrong");
-        document["root"]["output"]["outputDomain"]["y"].read(y);
+        document["output"]["outputDomain"]["y"].read(y);
         plbIOError(y.size() != 2 || util::lessEqual(y[1], y[0]), "The y-extent of the outputDomain is wrong");
-        document["root"]["output"]["outputDomain"]["z"].read(z);
+        document["output"]["outputDomain"]["z"].read(z);
         plbIOError(z.size() != 2 || util::lessEqual(z[1], z[0]), "The z-extent of the outputDomain is wrong");
         param.outputCuboid.lowerLeftCorner[0] = x[0];
         param.outputCuboid.lowerLeftCorner[1] = y[0];
@@ -277,37 +281,37 @@ void setParameters(std::string xmlInputFileName)
         param.outputCuboid.upperRightCorner[2] = z[1];
     }
 
-    document["root"]["output"]["outputOnSlices"].read(param.outputOnSlices);
+    document["output"]["outputOnSlices"].read(param.outputOnSlices);
     if (param.outputOnSlices) {
-        document["root"]["output"]["outputSlices"]["xSlices"]["xPositions"].read(param.xPositions);
-        document["root"]["output"]["outputSlices"]["xSlices"]["yRange"].read(param.xyRange);
+        document["output"]["outputSlices"]["xSlices"]["xPositions"].read(param.xPositions);
+        document["output"]["outputSlices"]["xSlices"]["yRange"].read(param.xyRange);
         plbIOError(param.xyRange.size() != 2 || util::lessEqual(param.xyRange[1], param.xyRange[0]),
                 "The y-range of the x-slices is wrong");
-        document["root"]["output"]["outputSlices"]["xSlices"]["zRange"].read(param.xzRange);
+        document["output"]["outputSlices"]["xSlices"]["zRange"].read(param.xzRange);
         plbIOError(param.xzRange.size() != 2 || util::lessEqual(param.xzRange[1], param.xzRange[0]),
                 "The z-range of the x-slices is wrong");
 
-        document["root"]["output"]["outputSlices"]["ySlices"]["yPositions"].read(param.yPositions);
-        document["root"]["output"]["outputSlices"]["ySlices"]["zRange"].read(param.yzRange);
+        document["output"]["outputSlices"]["ySlices"]["yPositions"].read(param.yPositions);
+        document["output"]["outputSlices"]["ySlices"]["zRange"].read(param.yzRange);
         plbIOError(param.yzRange.size() != 2 || util::lessEqual(param.yzRange[1], param.yzRange[0]),
                 "The z-range of the y-slices is wrong");
-        document["root"]["output"]["outputSlices"]["ySlices"]["xRange"].read(param.yxRange);
+        document["output"]["outputSlices"]["ySlices"]["xRange"].read(param.yxRange);
         plbIOError(param.yxRange.size() != 2 || util::lessEqual(param.yxRange[1], param.yxRange[0]),
                 "The x-range of the y-slices is wrong");
 
-        document["root"]["output"]["outputSlices"]["zSlices"]["zPositions"].read(param.zPositions);
-        document["root"]["output"]["outputSlices"]["zSlices"]["xRange"].read(param.zxRange);
+        document["output"]["outputSlices"]["zSlices"]["zPositions"].read(param.zPositions);
+        document["output"]["outputSlices"]["zSlices"]["xRange"].read(param.zxRange);
         plbIOError(param.zxRange.size() != 2 || util::lessEqual(param.zxRange[1], param.zxRange[0]),
                 "The x-range of the z-slices is wrong");
-        document["root"]["output"]["outputSlices"]["zSlices"]["yRange"].read(param.zyRange);
+        document["output"]["outputSlices"]["zSlices"]["yRange"].read(param.zyRange);
         plbIOError(param.zyRange.size() != 2 || util::lessEqual(param.zyRange[1], param.zyRange[0]),
                 "The x-range of the z-slices is wrong");
     }
 
-    document["root"]["output"]["abortFileName"].read(param.abortFileName);
-    document["root"]["output"]["xmlContinueFileName"].read(param.xmlContinueFileName);
-    document["root"]["output"]["baseFileName"].read(param.baseFileName);
-    document["root"]["output"]["useParallelIO"].read(param.useParallelIO);
+    document["output"]["abortFileName"].read(param.abortFileName);
+    document["output"]["xmlContinueFileName"].read(param.xmlContinueFileName);
+    document["output"]["baseFileName"].read(param.baseFileName);
+    document["output"]["useParallelIO"].read(param.useParallelIO);
 }
 
 void computeOutputDomain(Cuboid<T> const& cuboid, Box3D& box)
@@ -450,7 +454,6 @@ void orderAllOutputDomains()
 void setDerivedParameters()
 {
     // Derived quantities.
-
     Cuboid<T> fullCuboid(Array<T,3>(param.xDomain[0], param.yDomain[0], param.zDomain[0]),
                          Array<T,3>(param.xDomain[1], param.yDomain[1], param.zDomain[1]));
 
@@ -479,6 +482,8 @@ void setDerivedParameters()
     param.dt = param.u_LB / param.u_Ref * param.dx;
 
     param.rho_LB = (T) 1;
+
+    param.yVel_LB = param.yVel * (param.dt / param.dx);
 
     param.inletVelocity_LB = param.inletVelocity * (param.dt / param.dx);
 
@@ -595,9 +600,10 @@ void initialRhoU(plint iX, plint iY, plint iZ, T& rho, Array<T,3>& u)
 template <typename T>
 class VelFunction {
 public:
+    T yVel_LB = param.yVel_LB;
     Array<T,3> operator()(pluint id)
     {
-        return Array<T,3>::zero();
+        return Array<T,3>(0.0, yVel_LB, 0.0);
     }
 };
 
@@ -979,6 +985,46 @@ int main(int argc, char *argv[])
 
     pcout << "The full initialization phase took " << global::timer("init").getTime() << " seconds on "
           << nproc << " processes." << std::endl;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Starting iterations.
 

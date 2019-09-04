@@ -1,7 +1,7 @@
 #!/bin/bash --login
 ###
 #job name
-#SBATCH --job-name=rbd
+#SBATCH --job-name=rbd_vel
 #job stdout file
 #SBATCH --output=submit-%J.out
 #job stderr file

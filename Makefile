@@ -43,7 +43,7 @@ includePaths = ../../palabos/src/extensions ../../palabos/src/extensions/pypal_p
 libraries    =
 
 # Compiler to use without MPI parallelism
-serialCXX    = g++
+serialCXX    = g++ 
 # Compiler to use with MPI parallelism
 parallelCXX  = mpicxx
 # General compiler flags (e.g. -Wall to turn on all warnings on g++)

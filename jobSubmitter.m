@@ -39,7 +39,7 @@
 %%--------------------- DEFINITIONS AND USER INPUT - CHECK THESE BEFORE EACH RUN! --------------------%%
 % General.
 filenameSTL = 'dv15';  % .stl filename, no file extension.
-restarting = true;     % Restarting from a continue.xml file? (NOTE: Use same maxTime and dt if so).
+restarting = true;    % Restarting from a continue.xml file? (NOTE: Use same maxTime and dt if so).
 
 % Dynamics parameters.
 maxTime =  5.0;    % Length of overall dynamic sim.
@@ -47,7 +47,7 @@ maxTime =  5.0;    % Length of overall dynamic sim.
    CofG = [-5.0;   % x.
             0.8;   % y.
             0.0;]; % z.
-m_boat = 10000; % Mass of boat (kg).
+m_boat = 10000;    % Mass of boat (kg).
    Iyy = 1;
 
 %%--------------------------------------- CALCULATE FROM INPUTS --------------------------------------%%
@@ -63,11 +63,11 @@ dt_palabos = uLB*dx_palabos/uRef;
 
 % Calculate number of iterations required per Palabos sim to reach dynamics dt for each sim.
 max_iter_per_sim = round(dt/dt_palabos); % Each Palabos sim will run for this many iters to reach user-set dynamics dt.
-stat_iter = round(max_iter_per_sim/100); % Rate of Palabos iteration status write to output file.
+stat_iter = round(max_iter_per_sim/100)+1; % Rate of Palabos iteration status write to output file.
 out_iter  = round(max_iter_per_sim/5);   % Rate of Palabos iteration full output to disk.
 cp_iter   = max_iter_per_sim;            % Rate of checkpointing (once at the end of each sim).
 
-% If restarting, fine the time at which the last sim finished.
+% If restarting, find the time at which the last sim finished.
 if restarting
 	[restartIter,restartTime] = funcReadLastSim(restarting);
 else
@@ -83,11 +83,12 @@ for i = 1+restartIter : numOfSims+restartIter
 
 	% Calculate sim-specific iteration to terminate.
 	max_iter_this_sim = max_iter_per_sim*i;
-
+        cp_iter = max_iter_this_sim;
+        
 	% Stream values to params.xml file from params_template.xml file.
 	system('rm -f params.xml');
-	system(sprintf('sed ''s/MAX_ITER/%d/; s/STAT_ITER/%d/; s/OUT_ITER/%d/; s/CP_ITER/%d/'' params_template.xml > params.xml',max_iter_this_sim+1,stat_iter,out_iter,cp_iter)); % +1 to max_iter_this_sim to ensure checkpointing occurs correctly.
-	
+	system(sprintf('sed ''s/MAX_ITER/%d/; s/STAT_ITER/%d/; s/OUT_ITER/%d/; s/CP_ITER/%d/; s/YVEL/%d/;'' params_template.xml > params.xml',max_iter_this_sim+1,stat_iter,out_iter,cp_iter,z_dot(2) )); % +1 to max_iter_this_sim to ensure checkpointing occurs correctly.
+
         system(sprintf('echo --------------------------------------------------------------------------------\n'));
 	system(sprintf('echo ITERATION %d:\n',i));
         system(sprintf('echo sim-%08d: running...',i));
@@ -128,7 +129,7 @@ for i = 1+restartIter : numOfSims+restartIter
 	% Read .stl vertices and vertex normals.
 	[vertices, vertexNormals] = funcReadVertices(filenameSTL);
 	% Read forces and pressures.
-	[x_forceAvg, y_forceAvg, pressureCoords, pressureConnecs, pressureData] = funcReadForcesAndPressures(vertices,vertexNormals);
+	[x_forceAvg, y_forceAvg, pressureCoords, pressureConnecs, pressureData] = funcReadForcesAndPressures(vertices,vertexNormals,max_iter_this_sim,out_iter);
 	% Use dual mesh to acquire areas associated with pressures.
 	% [pressureAreas, pressureVertexNormals] = funcDualMesh(pressureCoords, pressureConnecs, pressureData, filenameSTL);
 	% Calculate moment.
@@ -145,7 +146,7 @@ end
 
 %% ------------------------------------------ POST-PROCESSING ----------------------------------------%%
 % Replace moved .stl file with initial .stl file for next run.
-system(['cp ',filenameSTL,'_init.stl ',filenameSTL,'.stl']);
+%system(['cp ',filenameSTL,'_init.stl ',filenameSTL,'.stl']);
 % Fill in Palabos output iterations that do not have a corresponding boat.stl file.
 funcFillBoatStlGaps(); 
 % Move the params.xml file to /tmp.
